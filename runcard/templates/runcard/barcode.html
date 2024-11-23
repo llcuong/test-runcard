@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% if port == '9526' %}PVC Runcard{% elif port == '9525' %}NBR Runcard{% endif %}</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
         body {
             -webkit-user-select: none;
@@ -339,6 +338,28 @@
             background-color: #0056b3;
         }
     </style>
+    <style>
+        .search-icon {
+            position: relative;
+            width: 18px;
+            height: 18px;
+            border: 3px solid white;
+            border-radius: 50%;
+            box-sizing: border-box;
+        }
+        .search-icon::before {
+            content: '';
+            position: absolute;
+            width: 8px;
+            height: 3px;
+            background-color: white;
+            border-radius: 2px;
+            transform: rotate(45deg);
+            transform-origin: left center;
+            bottom: 0;
+            left: 50%;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -353,7 +374,7 @@
             </div>
             <div class="runcard-left-line-button-2">
                 <button class="button" style="margin-top: 100%; background-color: #ccc" onclick="window.location.href='search'">
-                    <i class="fas fa-search"></i>
+                    <div class="search-icon"></div>
                 </button>
             </div>
         </div>
