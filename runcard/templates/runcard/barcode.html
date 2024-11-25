@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% if port == '9526' %}PVC Runcard{% elif port == '10000' %}NBR Runcard{% endif %}</title>
+    <title>{% if port == '10001' %}PVC Runcard{% elif port == '10000' %}NBR Runcard{% endif %}</title>
     <link rel="icon" href="data:,">
     <style>
         body {
@@ -392,13 +392,13 @@
                         <td>{{ mavattu }}</td>
                     </tr>
                     <tr>
-                        <td>廠 Xưởng:</td>
+                        <td>廠別 Xưởng:</td>
                         <td>{{ plant }}</td>
-                        <td>客卢代碼<br>Mã khách hàng:</td>
+                        <td>客戶代碼<br>Mã khách hàng:</td>
                         <td>{{ makhachhang }}</td>
                     </tr>
                     <tr>
-                        <td>樊台张 Máy:</td>
+                        <td>機台號 Máy:</td>
                         <td>{{ may }}</td>
                         <td rowspan="2">客户名稱<br>Tên viết tắt khách hàng:</td>
                         <td rowspan="2">{{ tenkhachhang }}</td>
@@ -418,10 +418,10 @@
                         <td>{{ aql }}</td>
                     </tr>
                     <tr>
-                        <td>Người kiểm tra:</td>
-                        <td></td>
+                        <td>檢驗人員<br>Người kiểm tra:</td>
+                        <td>{{ nguoikiemtra }}</td>
                         <td>尺寸 Kích cỡ:</td>
-                        <td></td>
+                        <td>{{ kichco }}</td>
                     </tr>
                 </table>
             </div>
