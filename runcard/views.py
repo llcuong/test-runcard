@@ -36,8 +36,8 @@ def barcodepage(request):
         time = request.GET.get('time', '')
         line = request.GET.get('line', '')
         wo = int(request.GET.get('wo', '0'))
-        print('plant: ', plant)
-        print('mach: ', mach)
+        # print('plant: ', plant)
+        # print('mach: ', mach)
 
         port = request.META.get('SERVER_PORT')
         if port == '10000':
