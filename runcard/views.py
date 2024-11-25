@@ -118,7 +118,7 @@ def barcodepage(request):
             tensile = str(round(float(text_to_convert_dict[wo]['Tensile']), 1)) if text_to_convert_dict[wo]['Tensile'] is not None else ''
             elongation = str(int(text_to_convert_dict[wo]['Elongation'])) if text_to_convert_dict[wo]['Elongation'] is not None else ''
             nguoikiemtra = text_to_convert_dict[wo]['Name']
-            kichco = extract_size(loai)
+            # kichco = extract_size(loai)
             text_to_convert = text_to_convert_dict[wo]['id']
         else:
             wo_zip = zip('0', '0')
@@ -229,51 +229,3 @@ def search_for_runcard(request):
         print(e)
         pass
     return render(request, 'runcard/search.html', locals())
-
-def extract_size(input_string):
-    """
-    Extracts the size substring (e.g., 'XS', 'M', 'XXL') from the given input string.
-
-    Args:
-        input_string (str): The input string containing the size information.
-
-    Returns:
-        str: The extracted size ('XXS', 'XS', 'S', 'M', 'L', 'XL', 'XXL') or an empty string if not found.
-    """
-    # Find the first '-' in the string
-    first_dash_index = input_string.find('-')
-
-    if first_dash_index == -1:
-        # If no '-' is found, use the entire string
-        dash_substring = input_string
-    else:
-        # Find the second '-' after the first
-        second_dash_index = input_string.find('-', first_dash_index + 1)
-
-        if second_dash_index == -1:
-            # If no second '-', extract from the first '-' to the end
-            dash_substring = input_string[first_dash_index + 1:]
-        else:
-            # Extract the substring between the two '-'
-            dash_substring = input_string[first_dash_index + 1:second_dash_index]
-
-    # Split the substring to isolate the size part
-    substring = dash_substring.split(" ")[0]
-
-    # Determine the size based on the ending characters
-    if substring.endswith(('XXL', 'XXS')):
-        result = substring[-3:]
-    elif substring.endswith(('XL', 'XS')):
-        result = substring[-2:]
-    else:
-        result = substring[-1]
-
-    # Validate the extracted size or search within the substring for known sizes
-    valid_sizes = ['XXS', 'XS', 'S', 'M', 'L', 'XL', 'XXL']
-    if result not in valid_sizes:
-        for size in valid_sizes:
-            if size in dash_substring:
-                return size
-        return ""
-
-    return result
