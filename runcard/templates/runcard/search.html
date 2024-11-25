@@ -98,9 +98,6 @@
             background: blue;
             color: white;
         }
-        {#.toggle-button:hover {#}
-        {#    background: #007BFF;#}
-        {#}#}
         .content-div {
             display: none;
             text-align: center;
@@ -183,24 +180,6 @@
         }
     </style>
     <style>
-        #textInput {
-            width: 100%;
-            padding: 10px;
-            margin-top: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        .runcard-info-table{
-            border-collapse: collapse;
-            width: 100%;
-        }
-        .runcard-info-table td{
-            border: 1px solid black;
-            padding: 8px;
-            background-color: white;
-        }
-    </style>
-    <style>
         .value-table {
             border-collapse: collapse;
             font-size: 10px;
@@ -229,7 +208,6 @@
                 <h1 style="font-size: 3.5vh">Tìm kiếm</h1>
                 <div class="button-container">
                     <button id="button1" class="toggle-button active" onclick="showDiv('div1', this)">Tìm kiếm Runcard</button>
-{#                    <button id="button2" class="toggle-button" onclick="showDiv('div2', this)">Thông tin Runcard</button>#}
                 </div>
                 <div id="div1" class="content-div">
                     <form method="POST" >
@@ -332,90 +310,9 @@
                         <div id="barcodeResult"></div>
                     </div>
                 </div>
-                <div id="div2" class="content-div hidden">
-                    <form method="POST" style="display: flex; align-items: center; width: 100%; margin-top: 4vh">
-                        {% csrf_token %}
-                        <input type="hidden" name="form_type" value="form2">
-                        <label for="textInput" style="flex: 0 0 26%; text-align: right; margin-right: 10px; padding-top: 14px; font-size: 2vh">
-                            Runcard:
-                        </label>
-                        <input type="text" id="textInput" name="textInput" placeholder="" style="flex: 0 0 40%; font-size: 2vh">
-                        <button type="submit" class="submit-button" style="flex: 0 0 10%; font-size: 1.7vh; padding: 13px 24px; margin-left: 15px">Tìm kiếm</button>
-                    </form>
-                    <p style="margin-top: 22px">*Lưu ý: ghi chữ hoa hay chữ thường đều được !</p>
-                    <div style="margin: auto; margin-top: 2vh; width: 50%;">
-                        {% if lsearch_rc > 0 %}
-                            {% if lrc_info > 0 %}
-                                {% if plant == rc_plant %}
-                                    <table class="runcard-info-table">
-                                        {% for item in runcard_info %}
-                                            <tr>
-                                                <td>Xưởng</td>
-                                                <td>{{ item.0 }}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Máy</td>
-                                                <td>{{ item.1 }}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Line</td>
-                                                <td>{{ item.2 }}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Ngày</td>
-                                                <td>{{ item.3 }}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Giờ</td>
-                                                <td>{{ item.4 }} - {{  item.4|add:"1" }}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Công đơn</td>
-                                                <td>{{ item.5 }}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Runcard</td>
-                                                <td>{{ item.6 }}</td>
-                                            </tr>
-                                        {% endfor %}
-                                    </table>
-                                {% else %}
-                                    <p style="font-size: 2.8vh; color: red">Tại sao bạn tìm kiếm runcard của {{ rc_plant }} ?</p>
-                                {% endif %}
-                            {% else %}
-                                <p>Không tìm thấy Runcard mà bạn yêu cầu!</p>
-                            {% endif %}
-                        {% endif %}
-                    </div>
-                </div>
             </div>
             <button class="close-button" onclick="window.location.href='barcode'">Close</button>
         </div>
     </div>
-    <script>
-        function showDiv(divId, button) {
-            const divs = document.querySelectorAll('.content-div');
-            divs.forEach(div => div.classList.add('hidden'));
-
-            const buttons = document.querySelectorAll('.toggle-button');
-            buttons.forEach(btn => btn.classList.remove('active'));
-
-            document.getElementById(divId).classList.remove('hidden');
-            button.classList.add('active');
-
-            const divNumber = divId === 'div1' ? 1 : 2;
-            const url = new URL(window.location.href);
-            url.searchParams.set('search', divNumber);
-            window.history.pushState({}, '', url);
-        }
-
-        window.addEventListener('DOMContentLoaded', () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const search = urlParams.get('search') || '1';
-            const divId = search === '2' ? 'div2' : 'div1';
-            const button = document.querySelector(`button#button${search}`);
-            if (button) showDiv(divId, button);
-        });
-    </script>
 </body>
 </html>
