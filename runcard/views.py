@@ -15,7 +15,7 @@ def barcodepage(request):
         period_times = ['6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17',
                         '18', '19', '20', '21', '22', '23', '0', '1', '2', '3', '4', '5']
 
-        now = datetime.now() + timedelta(minutes=39)# + timedelta(hours=14) #46 21
+        now = datetime.now() + timedelta(minutes=39)# - timedelta(hours=8) #46 21
         # print('barcode time: ', now)
         # now = datetime.strptime('2024-11-22 05:15:00.00000', '%Y-%m-%d7/ %H:%M:%S.%f') + timedelta(minutes=39)
         fnow = f"{int((str(now).split(' ')[-1]).split(':')[0])} giờ, ngày {datetime.strptime(str(now).split(' ')[0], '%Y-%m-%d').strftime('%d-%m-%Y')}"
@@ -73,7 +73,7 @@ def barcodepage(request):
                     MAX(CASE WHEN ir.OptionName = 'Palm' THEN ir.InspectionValue END) AS Palm,
                     MAX(CASE WHEN ir.OptionName = 'Finger' THEN ir.InspectionValue END) AS Finger,
                     MAX(CASE WHEN ir.OptionName = 'FingerTip' THEN ir.InspectionValue END) AS FingerTip,
-                    wdd.Weight,
+                    MAX(CASE WHEN ir.OptionName = 'Weight' THEN ir.InspectionValue END) AS Weight,
                     MAX(CASE WHEN ir.OptionName = 'Tensile' THEN ir.InspectionValue END) AS Tensile,
                     MAX(CASE WHEN ir.OptionName = 'Elongation' THEN ir.InspectionValue END) AS Elongation, 
                     au.Name
@@ -82,8 +82,6 @@ def barcodepage(request):
                     on wo.id = rc.WorkOrderId
                     left join [PMGMES].[dbo].[PMG_MES_IPQCInspectingRecord] ir
                     on ir.RunCardId = rc.id
-                    left join [PMG_DEVICE].[dbo].[WeightDeviceData] wdd
-                    on wdd.LotNo = rc.id
                     join [PMGMES].[dbo].[AbpUsers] au
                     on rc.CreatorUserId = au.Id
                     WHERE rc.MachineName = '{mach}'
@@ -93,7 +91,7 @@ def barcodepage(request):
                             OR (rc.Period <= 5 AND rc.InspectionDate = '{data_date2}'))
                     AND rc.Period = '{time}'
                     AND wo.StartDate is not NULL
-                    Group by rc.id, rc.WorkOrderId, wo.PartNo, wo.CustomerCode, wo.CustomerName, wo.ProductItem, wo.AQL, wdd.Weight, au.Name"""
+                    Group by rc.id, rc.WorkOrderId, wo.PartNo, wo.CustomerCode, wo.CustomerName, wo.ProductItem, wo.AQL, au.Name"""
         text_to_convert_dict = db_mes.select_sql_dict(sql02)
         wo_len = len(text_to_convert_dict)
         if wo_len > 0:
@@ -181,11 +179,9 @@ def search_for_runcard(request):
                             MAX(CASE WHEN ir.OptionName = 'Finger' THEN ir.InspectionStatus END) AS Finger_status,
                             MAX(CASE WHEN ir.OptionName = 'FingerTip' THEN ir.InspectionValue END) AS FingerTip,
                             MAX(CASE WHEN ir.OptionName = 'FingerTip' THEN ir.InspectionStatus END) AS FingerTip_status,
-                            wdd.Weight,
+                            MAX(CASE WHEN ir.OptionName = 'Weight' THEN ir.InspectionValue END) AS Weight,
                             max(case when ir.OptionName = 'Weight' then ir.InspectionStatus end) as Weight_status 
                             FROM [PMGMES].[dbo].[PMG_MES_RunCard] rc
-                            left join [PMG_DEVICE].[dbo].[WeightDeviceData] wdd
-                            on wdd.LotNo = rc.id
                             left join [PMGMES].[dbo].[PMG_MES_IPQCInspectingRecord] ir 
                             on ir.RunCardId = rc.id
                             where WorkCenterTypeName = '{search_plant}' 
@@ -194,7 +190,7 @@ def search_for_runcard(request):
                             and ((Period > 5 and InspectionDate = '{search_date}')
                             or (Period <= 5 and InspectionDate = DATEADD(DAY, 1 , '{search_date}')))
                             and Period = '{search_time}'
-                            group by rc.Id, wdd.Weight
+                            group by rc.Id
                             """
                 id_dict = db_mes.select_sql_dict(sql03)
                 id_dict_len = len(id_dict)
