@@ -21,17 +21,22 @@
             padding: 0;
             font-family: Arial, sans-serif;
             overflow: hidden;
+            background-color: rgba(0, 0, 0, 0.8);
         }
         .container {
-            width: 100%;
+            width: 40%;
             display: flex;
             justify-content: left;
+            margin: auto;
+            margin-top: 0;
+            background-color: white;
+            border-radius: 10px;
         }
         .modal-overlay {
             position: fixed;
             top: 0;
-            left: 0;
-            width: 100%;
+            {#left: 0;#}
+            width: 40%;
             height: 100%;
             background-color: rgba(0, 0, 0, 0.8);
             display: flex;
@@ -71,6 +76,34 @@
 
         .close-button:hover {
             background: #d32f2f;
+        }
+        @media (max-width: 1200px) {
+            .body {
+                margin: 0;
+                padding: 0;
+            }
+            .container {
+                width: 100%;
+                display: flex;
+                justify-content: left;
+                margin: auto;
+                margin-top: 0;
+                background-color: white;
+                border-radius: 10px;
+            }
+            .modal-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.8);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 9999;
+                overflow-y: auto;
+            }
         }
     </style>
     <style>
@@ -200,6 +233,38 @@
             background-color: #f2f2f2;
         }
     </style>
+    <style>
+        .content {
+            display: none;
+            background-color: #f4f4f4;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            margin: 20px auto;
+            width: 60%;
+        }
+
+        .content:target {
+            display: block;
+        }
+
+        .buttons {
+            margin-bottom: 20px;
+        }
+
+        .buttons a {
+            text-decoration: none;
+            color: white;
+            background-color: #007BFF;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 5px;
+            display: inline-block;
+        }
+
+        .buttons a:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -272,36 +337,78 @@
                     <div class="barcode-show" style="margin-top: 3vh; width: 100%">
                         {% if search_plant is not None %}
                             {% if id_dict_len > 0 %}
-                                <div style="width: 78%; margin: auto; background-color: white; border-radius: 20px">
-                                    <div style="display: flex; justify-content: space-between; width: 100%; margin-top: 0px;">
-                                        <div style="width: 50%; text-align: left; margin-top: 15px;">
-                                            <p style="font-size: 2.5vh; margin: 0 0 0 10%;">{{ search_time }} - {{ search_time|add:"1" }}</p>
+                                {% if id_dict_len == 1 %}
+                                    <div style="width: 78%; margin: auto; background-color: white; border-radius: 20px">
+                                        <div style="display: flex; justify-content: space-between; width: 100%; margin-top: 0px;">
+                                            <div style="width: 50%; text-align: left; margin-top: 15px;">
+                                                <p style="font-size: 2.5vh; margin: 0 0 0 10%;">{{ search_time }} - {{ search_time|add:"1" }}</p>
+                                            </div>
+                                            <div style="width: 50%; text-align: right; margin-top: 0px;">
+                                                <p style="font-size: 4vh; margin: 0 5% 0 0; color: {% if id_dict_len > 0 and search_roll is not None %}green;{% else %}white;{% endif %}">&#10003;</p>
+                                            </div>
                                         </div>
-                                        <div style="width: 50%; text-align: right; margin-top: 0px;">
-                                            <p style="font-size: 4vh; margin: 0 5% 0 0; color: {% if id_dict_len > 0 and search_roll is not None %}green;{% else %}white;{% endif %}">&#10003;</p>
+                                        <div>
+                                            <img src="data:image/svg+xml;base64,{{ search_barcode }}" alt="Barcode 128" style="width: 83%; height: 10vh; margin: auto; margin-top: 0.2vh; margin-bottom: 0vh;">
                                         </div>
+                                        <p style="padding-bottom: 20px; font-size: 2.5vh">{{ search_rc }}</p>
                                     </div>
                                     <div>
-                                        <img src="data:image/svg+xml;base64,{{ search_barcode }}" alt="Barcode 128" style="width: 83%; height: 10vh; margin: auto; margin-top: 0.2vh; margin-bottom: 0vh;">
+                                        {% if id_dict_len > 0 and search_roll != '' %}
+                                             <table class="value-table">
+                                                {% for item in search_rc_values %}
+                                                    <tr>
+                                                        <td>{{ item.0 }}</td>
+                                                        <td style="color:{% if item.2 != 'PASS' %}red{% endif %}">{{ item.1 }}</td>
+                                                        <td>{{ item.3 }}</td>
+                                                        <td style="color:{% if item.5 != 'PASS' %}red{% endif %}">{{ item.4 }}</td>
+                                                        <td>{{ item.6 }}</td>
+                                                        <td style="color:{% if item.8 != 'PASS' %}red{% endif %}">{{ item.7 }}</td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </table>
+                                        {% endif %}
                                     </div>
-                                    <p style="padding-bottom: 20px; font-size: 2.5vh">{{ search_rc }}</p>
-                                </div>
-                                <div>
-                                    {% if id_dict_len > 0 and search_roll != '' %}
-                                         <table class="value-table">
-                                            {% for item in search_rc_values %}
-                                                <tr>
-                                                    <td>{{ item.0 }}</td>
-                                                    <td style="color:{% if item.2 != 'PASS' %}red{% endif %}">{{ item.1 }}</td>
-                                                    <td>{{ item.3 }}</td>
-                                                    <td style="color:{% if item.5 != 'PASS' %}red{% endif %}">{{ item.4 }}</td>
-                                                    <td>{{ item.6 }}</td>
-                                                    <td style="color:{% if item.8 != 'PASS' %}red{% endif %}">{{ item.7 }}</td>
-                                                </tr>
-                                            {% endfor %}
-                                        </table>
-                                    {% endif %}
-                                </div>
+                                {% elif id_dict_len > 1 %}
+                                    <div class="buttons">
+                                        {% for wo in search_wo_list %}
+                                            <a href="#content{{ forloop.counter }}">{{ wo }}</a>
+                                        {% endfor %}
+                                    </div>
+                                    {% for id, rc, dt, sr in search_rcs %}
+                                        <div id="content{{ forloop.counter }}" class="content" style="width: 78%; margin: auto; border-radius: 0px; border: solid 1px #f1f1f1">
+                                            <div style="background-color: white; border-radius: 20px">
+                                                <div style="display: flex; justify-content: space-between; width: 100%; margin-top: 0px;">
+                                                    <div style="width: 50%; text-align: left; margin-top: 15px;">
+                                                        <p style="font-size: 2.5vh; margin: 0 0 0 10%;">{{ search_time }} - {{ search_time|add:"1" }}</p>
+                                                    </div>
+                                                    <div style="width: 50%; text-align: right; margin-top: 0px;">
+                                                        <p style="font-size: 4vh; margin: 0 5% 0 0; color: {% if sr != '' %}green;{% else %}white;{% endif %}">&#10003;</p>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <img src="data:image/svg+xml;base64,{{ rc }}" alt="Barcode 128" style="width: 83%; height: 10vh; margin: auto; margin-top: 0.2vh; margin-bottom: 0vh;">
+                                                </div>
+                                                <p style="padding-bottom: 20px; font-size: 2.5vh">{{ id }}</p>
+                                            </div>
+                                            <div>
+                                                {% if sr != '' %}
+                                                     <table class="value-table">
+                                                        {% for item in dt %}
+                                                            <tr>
+                                                                <td>{{ item.0 }}</td>
+                                                                <td style="color:{% if item.2 != 'PASS' %}red{% endif %}">{{ item.1 }}</td>
+                                                                <td>{{ item.3 }}</td>
+                                                                <td style="color:{% if item.5 != 'PASS' %}red{% endif %}">{{ item.4 }}</td>
+                                                                <td>{{ item.6 }}</td>
+                                                                <td style="color:{% if item.8 != 'PASS' %}red{% endif %}">{{ item.7 }}</td>
+                                                            </tr>
+                                                        {% endfor %}
+                                                    </table>
+                                                {% endif %}
+                                                </div>
+                                            </div>
+                                    {% endfor %}
+                                {% endif %}
                             {% else %}
                                 <p style="padding-top: 20px; font-size: 2vh">未找到 Runcard!</p>
                                 <p style="padding-top: 10px; font-size: 2vh">Không tìm thấy Runcard!</p>

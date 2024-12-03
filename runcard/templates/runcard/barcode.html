@@ -22,14 +22,20 @@
             padding: 0;
             font-family: Arial, sans-serif;
             overflow: hidden;
+            background-color: rgba(0, 0, 0, 0.8);
+            min-height: 70%;
         }
         .container {
-            width: 100%;
+            width: 40%;
             display: flex;
             justify-content: left;
+            margin: auto;
+            margin-top: 0;
+            background-color: white;
+            border-radius: 10px;
         }
         .runcard-left-line-button {
-            width: 3.5%;
+            width: 9%;
             height: 100vh;
         }
         .runcard-left-line-button-1{
@@ -46,7 +52,7 @@
             margin-top: 0vh;
         }
         .runcard-middle{
-            width: 32%;
+            width: 82%;
             height: 100%;
             position: relative;
             margin-top: 15px;
@@ -89,7 +95,7 @@
         }
 
         .runcard-right-time-button{
-            width: 3%;
+            width: 9%;
             margin-left: 0.5%;
         }
         .button {
@@ -174,7 +180,8 @@
             cursor: pointer;
         }
         .thickness{
-            width: 61.5%;
+            width: 0%;
+            display: none;
             margin-left: 0.5%;
             margin-right: 0.5%;
             border: 1px solid #D9D9D9;
@@ -223,6 +230,22 @@
             border-radius: 5px;
         }
         @media (max-width: 1200px) {
+            body {
+                display: flex;
+                justify-content: center;
+                align-items: flex-start; {# center #}
+                margin: 0;
+                padding: 0;
+                font-family: Arial, sans-serif;
+                overflow: hidden;
+                background-color: white;
+                min-height: 70%;
+            }
+            .container {
+                width: 100%;
+                height: 100%;
+                background-color: white;
+            }
             .runcard-left-line-button {
                 width: 10%;
                 height: 100%;
@@ -516,37 +539,7 @@
                 {% endif %}
             {% endfor %}
         </div>
-        <div class="thickness">
-            <div class="thickness-input">
-                <form method="POST" >
-                    {% csrf_token %}
-                    <table class="thickness-table">
-                        <tr>
-                            <td>Runcard</td>
-                            <td>Roll</td>
-                            <td>Cuff</td>
-                            <td>Palm</td>
-                            <td>Finger</td>
-                            <td>FingerTip</td>
-                        </tr>
-                        <tr>
-                            <td><input type="text" name="runcard" value="{{ text_to_convert }}" readonly required></td>
-                            <td><input type="text" name="roll" required></td>
-                            <td><input type="text" name="cuff" required></td>
-                            <td><input type="text" name="palm" required></td>
-                            <td><input type="text" name="finger" required></td>
-                            <td><input type="text" name="tip" required></td>
-                        </tr>
-                    </table>
-                </form>
-            </div>
-            <div class="thickness-submit">
-                <button type="submit">Submit</button>
-            </div>
-            <div>
 
-            </div>
-        </div>
     </div>
     <script>
         function showCustomPopup(message) {

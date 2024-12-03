@@ -168,7 +168,7 @@ def search_for_runcard(request):
                 search_line = request.POST.get("search_line", "")
                 search_date = request.POST.get("search_date", "")
                 search_time = request.POST.get("search_time", "")
-                sql03 = f"""SELECT rc.Id, 
+                sql03 = f"""SELECT rc.WorkOrderId, rc.Id, 
                             MAX(CASE WHEN ir.OptionName = 'Roll' THEN ir.InspectionValue END) AS Roll,
                             MAX(CASE WHEN ir.OptionName = 'Roll' THEN ir.InspectionStatus END) AS Roll_status,
                             MAX(CASE WHEN ir.OptionName = 'Cuff' THEN ir.InspectionValue END) AS Cuff,
@@ -190,23 +190,49 @@ def search_for_runcard(request):
                             and ((Period > 5 and InspectionDate = '{search_date}')
                             or (Period <= 5 and InspectionDate = DATEADD(DAY, 1 , '{search_date}')))
                             and Period = '{search_time}'
-                            group by rc.Id
+                            group by rc.WorkOrderId, rc.Id
                             """
                 id_dict = db_mes.select_sql_dict(sql03)
                 id_dict_len = len(id_dict)
                 if len(id_dict) > 0:
-                    search_rc = id_dict[0]['Id']
-                    s_barcode_svg = barcode_class(search_rc, writer=SVGWriter())
-                    s_buffer = BytesIO()
-                    s_barcode_svg.write(s_buffer)
-                    search_barcode = base64.b64encode(s_buffer.getvalue()).decode('utf-8')
-                    try:
-                        search_roll = id_dict[0]['Roll']
-                        search_rc_values = [
-                            ['Cuộn biên', id_dict[0]['Roll'], id_dict[0]['Roll_status'], 'Cổ tay', id_dict[0]['Cuff'], id_dict[0]['Cuff_status'], 'Bàn tay', id_dict[0]['Palm'], id_dict[0]['Palm_status']],
-                            ['Ngón tay', id_dict[0]['Finger'], id_dict[0]['Finger_status'], 'Đầu ngón', id_dict[0]['FingerTip'], id_dict[0]['FingerTip_status'], 'Trọng lượng', round(float(id_dict[0]['Weight']), 1), id_dict[0]['Weight_status']]]
-                    except:
-                        pass
+                    if id_dict_len == 1:
+                        search_rc = id_dict[0]['Id']
+                        s_barcode_svg = barcode_class(search_rc, writer=SVGWriter())
+                        s_buffer = BytesIO()
+                        s_barcode_svg.write(s_buffer)
+                        search_barcode = base64.b64encode(s_buffer.getvalue()).decode('utf-8')
+                        try:
+                            search_roll = id_dict[0]['Roll']
+                            search_rc_values = [
+                                ['Cuộn biên', id_dict[0]['Roll'], id_dict[0]['Roll_status'], 'Cổ tay', id_dict[0]['Cuff'], id_dict[0]['Cuff_status'], 'Bàn tay', id_dict[0]['Palm'], id_dict[0]['Palm_status']],
+                                ['Ngón tay', id_dict[0]['Finger'], id_dict[0]['Finger_status'], 'Đầu ngón', id_dict[0]['FingerTip'], id_dict[0]['FingerTip_status'], 'Trọng lượng', round(float(id_dict[0]['Weight']), 1), id_dict[0]['Weight_status']]]
+                        except:
+                            pass
+                    else:
+                        search_wo_list = [id['WorkOrderId'] for id in id_dict]
+                        search_rc_list = [id['Id'] for id in id_dict]
+                        search_barcode_list = []
+                        search_rc_values = []
+                        search_roll = []
+                        for i in range(len(id_dict)):
+                            search_rc = id_dict[i]['Id']
+                            s_barcode_svg = barcode_class(search_rc, writer=SVGWriter())
+                            s_buffer = BytesIO()
+                            s_barcode_svg.write(s_buffer)
+                            search_barcode = base64.b64encode(s_buffer.getvalue()).decode('utf-8')
+                            search_barcode_list.append(search_barcode)
+                            search_roll.append(id_dict[i]['Roll'] if id_dict[i]['Roll'] is not None else '')
+                            try:
+                                search_rc_values.append([
+                                    ['Cuộn biên', id_dict[i]['Roll'], id_dict[i]['Roll_status'], 'Cổ tay',
+                                     id_dict[i]['Cuff'], id_dict[i]['Cuff_status'], 'Bàn tay', id_dict[i]['Palm'],
+                                     id_dict[i]['Palm_status']],
+                                    ['Ngón tay', id_dict[i]['Finger'], id_dict[i]['Finger_status'], 'Đầu ngón',
+                                     id_dict[i]['FingerTip'], id_dict[i]['FingerTip_status'], 'Trọng lượng',
+                                     round(float(id_dict[i]['Weight']), 1) if id_dict[i]['Weight'] is not None else '', id_dict[i]['Weight_status']]])
+                            except:
+                                pass
+                        search_rcs = zip(search_rc_list, search_barcode_list, search_rc_values, search_roll)
             elif form_type == 'form2':
                 search_rc = str(request.POST.get('textInput', '')).upper()
                 lsearch_rc = len(search_rc)
