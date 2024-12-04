@@ -233,20 +233,6 @@ def search_for_runcard(request):
                             except:
                                 pass
                         search_rcs = zip(search_rc_list, search_barcode_list, search_rc_values, search_roll)
-            elif form_type == 'form2':
-                search_rc = str(request.POST.get('textInput', '')).upper()
-                lsearch_rc = len(search_rc)
-                sql04 = f"""
-                SELECT WorkCenterTypeName as Plant, MachineName, LineName, InspectionDate, Period, WorkOrderId, Id
-                FROM [PMGMES].[dbo].[PMG_MES_RunCard] where id = '{search_rc}'
-                """
-                rc_info = db_mes.select_sql_dict(sql04)
-                lrc_info = len(rc_info)
-                if lrc_info > 0:
-                    runcard_info = [list(rc_info[0].values())]
-                    runcard_info[0][1] = str(runcard_info[0][1]).split('_')[-1]
-                    runcard_info[0][3] = (runcard_info[0][3]).strftime('%d-%m-%Y')
-                    rc_plant = runcard_info[0][0]
     except Exception as e:
         print(e)
         pass
