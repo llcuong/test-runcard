@@ -138,7 +138,7 @@ def search_for_runcard(request):
 
         today_date = datetime.today() - timedelta(hours=5) + timedelta(minutes=39)# + timedelta(hours=14)
         # print('search today: ', today_date)
-        last_7_days = [(today_date - timedelta(days=1) - timedelta(days=i)).strftime('%Y-%m-%d') for i in range(7)]
+        last_7_days = [(today_date - timedelta(days=0) - timedelta(days=i)).strftime('%Y-%m-%d') for i in range(7)]
 
         port = request.META.get('SERVER_PORT')
         if port == '10000':
