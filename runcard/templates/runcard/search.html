@@ -6,14 +6,6 @@
     <link rel="icon" href="data:,">
     <style>
         body {
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
-        }
-    </style>
-    <style>
-        body {
             display: flex;
             justify-content: center;
             align-items: flex-start; {# center #}
@@ -78,6 +70,12 @@
             background: #d32f2f;
         }
         @media (max-width: 1200px) {
+            body {
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
+            }
             .body {
                 margin: 0;
                 padding: 0;
