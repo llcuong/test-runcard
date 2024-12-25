@@ -281,8 +281,8 @@
                 margin-top: 0vh;
             }
             .barcode-error{
-                height: 16.5vh;
-                font-size: 2.15vh;
+                height: 16.7vh;
+                font-size: 2.2vh;
             }
         }
         @media (min-width: 1201px) {
@@ -327,45 +327,6 @@
         {% endif %}
     </style>
     <style>
-        #customPopup {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: white;
-            padding: 20px;
-            border: 1px solid #ccc;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
-            text-align: center;
-            width: 400px;
-            border-radius: 8px;
-        }
-        #overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 999;
-        }
-        #customPopup button {
-            margin-top: 15px;
-            padding: 10px 20px;
-            background-color: #007BFF;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        #customPopup button:hover {
-            background-color: #0056b3;
-        }
-    </style>
-    <style>
         .date-container{
             width: 100%;
             background-color: white;
@@ -387,7 +348,7 @@
         <div class="runcard-left-line-button">
             <div class="runcard-left-line-button-1">
                 {% for machine_value, machine_name in machine_lines %}
-                    <a href="{% url 'barcodepage' %}?plant={{ plant }}&mach={{ machine_value }}&date={{ current_date }}&time={{ time }}&line=A1&wo=0"
+                    <a href="{% url 'barcodepage2' %}?plant={{ plant }}&mach={{ machine_value }}&date={{ current_date }}&time={{ time }}&line=A1&wo=0"
                        class="button {% if machine_value == mach %}active{% endif %}">
                         {{ machine_name }}
                     </a>
@@ -448,7 +409,7 @@
             <div class="runcard-middle-2-row-button">
                 <div class="runcard-middle-2-row-button-1-row">
                     {% for wo1, id in wo_zip %}
-                         <a href="{% url 'barcodepage' %}?plant={{ plant }}&mach={{ mach }}&date={{ current_date }}&time={{ time }}&line={{ line }}&wo={{ id }}" class="button4 {% if wo == id|add:"0" %}active{% endif %}" style="{% if wo_len < 2 %}color: white; background-color: white{% endif %}">
+                         <a href="{% url 'barcodepage2' %}?plant={{ plant }}&mach={{ mach }}&date={{ current_date }}&time={{ time }}&line={{ line }}&wo={{ id }}" class="button4 {% if wo == id|add:"0" %}active{% endif %}" style="{% if wo_len < 2 %}color: white; background-color: white{% endif %}">
                             {{ wo1 }}
                          </a>
                     {% endfor %}
@@ -461,14 +422,14 @@
                                     {{ pvc_line }}
                                 </a>
                             {% else %}
-                                <a href="{% url 'barcodepage' %}?plant={{ plant }}&mach={{ mach }}&date={{ current_date }}&time={{ time }}&line={{ pvc_line }}&wo={{ wo }}" class="button2 {% if pvc_line == line %}active{% endif %}">
+                                <a href="{% url 'barcodepage2' %}?plant={{ plant }}&mach={{ mach }}&date={{ current_date }}&time={{ time }}&line={{ pvc_line }}&wo={{ wo }}" class="button2 {% if pvc_line == line %}active{% endif %}">
                                     {{ pvc_line }}
                                 </a>
                             {% endif %}
                         {% endfor %}
                     {% elif plant == 'NBR'%}
                         {% for nbr_line in nbr_lines %}
-                            <a href="{% url 'barcodepage' %}?plant={{ plant }}&mach={{ mach }}&date={{ current_date }}&time={{ time }}&line={{ nbr_line }}&wo={% if wo_len > 0 %}{{ wo }}{% else %}0{% endif %}" class="button2 {% if nbr_line == line %}active{% endif %}">
+                            <a href="{% url 'barcodepage2' %}?plant={{ plant }}&mach={{ mach }}&date={{ current_date }}&time={{ time }}&line={{ nbr_line }}&wo={% if wo_len > 0 %}{{ wo }}{% else %}0{% endif %}" class="button2 {% if nbr_line == line %}active{% endif %}">
                                 {{ nbr_line }}
                             </a>
                         {% endfor %}
@@ -515,17 +476,17 @@
                         <td>Sức căng</td>
                         <td style="color: {% if tensile_status == 1 %}red;{% else %}black;{% endif %}">{{ tensile }}</td>
                         <td>Tỉ lệ giãn</td>
-                        <td style="colorz: {% if elongation_status == 1 %}red;{% else %}black;{% endif %}">{{ elongation }}</td>
+                        <td style="color: {% if elongation_status == 1 %}red;{% else %}black;{% endif %}">{{ elongation }}</td>
                     </tr>
                 </table>
             </div>
-            <form method="POST" action="{% url 'barcodepage' %}">
+            <form method="POST" action="{% url 'barcodepage2' %}">
                 {% csrf_token %}
                 <div class="date-container">
-                     <a href="{% url 'barcodepage2' %}?plant={{ plant }}&mach={{ mach }}&date={{ yesterday }}&time={{ time }}&line={{ line }}&wo={{ wo }}" class="button5">
+                     <a href="{% url 'barcodepage2' %}?plant={{ plant }}&mach={{ mach }}&date={{ current_date }}&time={{ time }}&line={{ line }}&wo={{ wo }}" class="button5" style="background-color: blue; color: white;">
                         Hôm qua
                      </a>
-                     <a href="{% url 'barcodepage' %}?plant={{ plant }}&mach={{ mach }}&date={{ current_date }}&time={{ time }}&line={{ line }}&wo={{ wo }}" class="button5" style="background-color: blue; color: white;">
+                     <a href="{% url 'barcodepage' %}?plant={{ plant }}&mach={{ mach }}&date={{ tomorrow }}&time={{ time }}&line={{ line }}&wo={{ wo }}" class="button5">
                         Hôm nay
                      </a>
                 </div>
@@ -538,7 +499,7 @@
                 {% if current_time > 5 %}
                     {% if ptime|add:"0" <= current_time %}
                         {% if ptime|add:"0" > 5 %}
-                            <a href="{% url 'barcodepage' %}?plant={{ plant }}&mach={{ mach }}&date={{ current_date }}&time={{ ptime }}&line={{ line }}&wo=0" class="button3 {% if ptime == time %}active{% endif %}" style="{% if ptime != time %}{% if ptime|add:"0" < current_time%}background-color: #AEAEAE; color: white;{% elif ptime|add:"0" == current_time %}background-color: #007BFF; color: white;{% endif %}{% endif %}">
+                            <a href="{% url 'barcodepage2' %}?plant={{ plant }}&mach={{ mach }}&date={{ current_date }}&time={{ ptime }}&line={{ line }}&wo=0" class="button3 {% if ptime == time %}active{% endif %}" style="{% if ptime != time %}{% if ptime|add:"0" < current_time%}background-color: #AEAEAE; color: white;{% elif ptime|add:"0" == current_time %}background-color: #007BFF; color: white;{% endif %}{% endif %}">
                                 {{ ptime }}:00
                             </a>
                         {% else %}
@@ -553,12 +514,12 @@
                     {% endif %}
                 {% else %}
                     {% if ptime|add:"0" > 5%}
-                        <a href="{% url 'barcodepage' %}?plant={{ plant }}&mach={{ mach }}&date={{ current_date }}&time={{ ptime }}&line={{ line }}&wo=0" class="button3 {% if ptime == time %}active{% endif %}" style="{% if ptime != time %}background-color: #AEAEAE; color: white{% endif %}">
+                        <a href="{% url 'barcodepage2' %}?plant={{ plant }}&mach={{ mach }}&date={{ current_date }}&time={{ ptime }}&line={{ line }}&wo=0" class="button3 {% if ptime == time %}active{% endif %}" style="{% if ptime != time %}background-color: #AEAEAE; color: white{% endif %}">
                             {{ ptime }}:00
                         </a>
                     {% else %}
                         {% if ptime|add:"0" <= current_time %}
-                            <a href="{% url 'barcodepage' %}?plant={{ plant }}&mach={{ mach }}&date={{ current_date }}&time={{ ptime }}&line={{ line }}&wo=0" class="button3 {% if ptime == time %}active{% endif %}" style="{% if ptime != time %}{% if ptime|add:"0" < current_time%}background-color: #AEAEAE; color: white;{% elif ptime|add:"0" == current_time %}{% if date == today %}background-color: blue; color: white;{% else %}background-color: #AEAEAE; color: white;{% endif %}{% endif %}{% endif %}">
+                            <a href="{% url 'barcodepage2' %}?plant={{ plant }}&mach={{ mach }}&date={{ current_date }}&time={{ ptime }}&line={{ line }}&wo=0" class="button3 {% if ptime == time %}active{% endif %}" style="{% if ptime != time %}{% if ptime|add:"0" < current_time%}background-color: #AEAEAE; color: white;{% elif ptime|add:"0" == current_time %}background-color: #AEAEAE; color: white;{% endif %}{% endif %}">
                                 {{ ptime }}:00
                             </a>
                         {% else %}
@@ -570,52 +531,6 @@
                 {% endif %}
             {% endfor %}
         </div>
-
-    </div>
-    <script>
-        function showCustomPopup(message) {
-            const popup = document.getElementById('customPopup');
-            const overlay = document.getElementById('overlay');
-            const popupMessage = document.getElementById('popupMessage');
-
-            popupMessage.textContent = message;
-            popup.style.display = 'block';
-            overlay.style.display = 'block';
-        }
-
-        function closePopup() {
-            const popup = document.getElementById('customPopup');
-            const overlay = document.getElementById('overlay');
-
-            popup.style.display = 'none';
-            overlay.style.display = 'none';
-            localStorage.removeItem('showPopup');
-        }
-
-        function checkAndReload() {
-            const now = new Date();
-            const currentMinutes = now.getMinutes();
-            const currentSeconds = now.getSeconds();
-
-            if (currentMinutes === 22 && currentSeconds === 0) {
-                localStorage.setItem('showPopup', 'true');
-                location.reload();
-            } else {
-                const nextCheckDelay = (60 - now.getSeconds()) * 1000;
-                setTimeout(checkAndReload, nextCheckDelay);
-            }
-        }
-        window.onload = () => {
-            if (localStorage.getItem('showPopup') === 'true') {
-                showCustomPopup('Đã mở Runcard mới');
-            }
-            checkAndReload();
-        };
-    </script>
-    <div id="overlay"></div>
-    <div id="customPopup">
-        <p id="popupMessage"></p>
-        <button onclick="closePopup()">OK</button>
     </div>
 </body>
 </html>

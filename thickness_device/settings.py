@@ -27,7 +27,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -93,6 +92,17 @@ DATABASES = {
             'driver': 'ODBC Driver 17 for SQL Server',
         },
     },
+    'VNEDC': {
+        'ENGINE': 'mssql',
+        'NAME': 'VNEDC',
+        'USER': 'vnedc',
+        'PASSWORD': 'vnedc#2024',
+        'HOST': '192.168.11.31',
+        'PORT': '1433',
+        'OPTIONS': {
+            'driver': 'ODBC Driver 17 for SQL Server',
+        },
+    }
 }
 
 # Password validation
