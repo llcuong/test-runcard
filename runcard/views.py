@@ -417,28 +417,13 @@ def extract_kichco(input_string):
     try:
         db = vnedc_database()
         sql = f"""
-            select distinct size 
-            from 
-            (SELECT TOP 1 prod_size_a1 AS size
-            FROM [VNEDC].[dbo].[collection_daily_prod_info]
-            WHERE prod_name_a1 = '{input_string}'
-            UNION ALL
-            SELECT TOP 1 prod_size_b1 AS size
-            FROM [VNEDC].[dbo].[collection_daily_prod_info]
-            WHERE prod_size_b1 = '{input_string}'
-            UNION ALL
-            SELECT TOP 1 prod_size_b2 AS size
-            FROM [VNEDC].[dbo].[collection_daily_prod_info]
-            WHERE prod_size_b2 = '{input_string}'
-            UNION ALL
-            SELECT TOP 1 prod_size_a2 AS size
-            FROM [VNEDC].[dbo].[collection_daily_prod_info]
-            WHERE prod_size_a2 = '{input_string}')
-            as kichco
+            SELECT distinct(size) as kichco
+            FROM [VNEDC].[dbo].[collection_daily_prod_info_head] 
+            WHERE product ='{input_string}'
         """
         size = db.select_sql_dict(sql)
         if len(size) > 0:
-            return size[0]['size']
+            return size[0]['kichco']
             pass
         else:
             first_dash_index = input_string.find('-')
@@ -477,5 +462,5 @@ def extract_kichco(input_string):
             else:
                 return result
     except Exception as e:
-        print(e)
+        print(f'Error: {e}')
         return ' '
