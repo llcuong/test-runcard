@@ -147,7 +147,7 @@ def barcodepage(request):
             elongation_status = text_to_convert_dict[wo]['Elongation_status'] if text_to_convert_dict[wo]['Elongation_status'] is not None else ''
 
             nguoikiemtra = text_to_convert_dict[wo]['Name']
-            kichco = extract_kichco(loai)
+            kichco = ''
             text_to_convert = text_to_convert_dict[wo]['id']
         else:
             wo_zip = zip('0', '0')
@@ -292,7 +292,7 @@ def barcodepage2(request):
             elongation_status = text_to_convert_dict[wo]['Elongation_status'] if text_to_convert_dict[wo]['Elongation_status'] is not None else ''
 
             nguoikiemtra = text_to_convert_dict[wo]['Name']
-            kichco = extract_kichco(loai)
+            kichco = ''
             text_to_convert = text_to_convert_dict[wo]['id']
         else:
             wo_zip = zip('0', '0')
