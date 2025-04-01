@@ -64,8 +64,11 @@ def barcodepage(request):
 
         if plant == 'PVC':
             machine_lines_name = [machine_lines_dict['machine_name'] for machine_lines_dict in machine_lines_dicts][:12]
+            size_table = '[PMGMES].[dbo].[PMG_MES_PVC_SCADA_Std]'
         else:
             machine_lines_name = [machine_lines_dict['machine_name'] for machine_lines_dict in machine_lines_dicts]
+            size_table = '[PMGMES].[dbo].[PMG_MES_NBR_SCADA_Std]'
+
         machine_lines_short = [str(machine_lines_dict['machine_name']).split('_')[-1] for machine_lines_dict in machine_lines_dicts]
         machine_lines = zip(machine_lines_name, machine_lines_short)
 
@@ -90,7 +93,7 @@ def barcodepage(request):
                     MAX(CASE WHEN ir.OptionName = 'Tensile' THEN CASE WHEN ir.InspectionStatus = 'NG' THEN 1 ELSE 0 END END) AS Tensile_status,
                     MAX(CASE WHEN ir.OptionName = 'Elongation' THEN CASE WHEN ir.InspectionStatus = 'NG' THEN CONCAT(CAST(CAST(ir.InspectionValue AS INT) AS VARCHAR(MAX)), ' (', CAST(ir.DefectCode AS VARCHAR(MAX)), ')') ELSE CAST(CAST(ir.InspectionValue AS INT) AS VARCHAR(MAX)) END END) AS Elongation,
                     MAX(CASE WHEN ir.OptionName = 'Elongation' THEN CASE WHEN ir.InspectionStatus = 'NG' THEN 1 ELSE 0 END END) AS Elongation_status,
-                    au.Name
+                    au.Name, std.Size
                     FROM [PMGMES].[dbo].[PMG_MES_RunCard] rc
                     join [PMGMES].[dbo].[PMG_MES_WorkOrder] wo
                     on wo.id = rc.WorkOrderId
@@ -98,6 +101,8 @@ def barcodepage(request):
                     on ir.RunCardId = rc.id
                     join [PMGMES].[dbo].[AbpUsers] au
                     on rc.CreatorUserId = au.Id
+                    join {size_table} std
+                    on std.PartNo = wo.PartNo                    
                     WHERE rc.MachineName = '{mach}'
                         AND rc.WorkCenterTypeName = '{plant}'
                         AND rc.LineName = '{line}'
@@ -105,7 +110,7 @@ def barcodepage(request):
                             OR (rc.Period <= 5 AND rc.InspectionDate = '{data_date2}'))
                     AND rc.Period = '{time}'
                     AND wo.StartDate is not NULL
-                    Group by rc.id, rc.WorkOrderId, wo.PartNo, wo.CustomerCode, wo.CustomerName, wo.ProductItem, wo.AQL, au.Name"""
+                    Group by rc.id, rc.WorkOrderId, wo.PartNo, wo.CustomerCode, wo.CustomerName, wo.ProductItem, wo.AQL, au.Name, std.Size"""
         text_to_convert_dict = db_mes.select_sql_dict(sql02)
         wo_len = len(text_to_convert_dict)
         if wo_len > 0:
@@ -147,7 +152,7 @@ def barcodepage(request):
             elongation_status = text_to_convert_dict[wo]['Elongation_status'] if text_to_convert_dict[wo]['Elongation_status'] is not None else ''
 
             nguoikiemtra = text_to_convert_dict[wo]['Name']
-            kichco = ''
+            kichco = text_to_convert_dict[wo]['Size']
             text_to_convert = text_to_convert_dict[wo]['id']
         else:
             wo_zip = zip('0', '0')
@@ -209,9 +214,12 @@ def barcodepage2(request):
         machine_lines_dicts = db_mes.select_sql_dict(sql01)
 
         if plant == 'PVC':
+            size_table = '[PMGMES].[dbo].[PMG_MES_PVC_SCADA_Std]'
             machine_lines_name = [machine_lines_dict['machine_name'] for machine_lines_dict in machine_lines_dicts][:12]
         else:
             machine_lines_name = [machine_lines_dict['machine_name'] for machine_lines_dict in machine_lines_dicts]
+            size_table = '[PMGMES].[dbo].[PMG_MES_NBR_SCADA_Std]'
+
         machine_lines_short = [str(machine_lines_dict['machine_name']).split('_')[-1] for machine_lines_dict in machine_lines_dicts]
         machine_lines = zip(machine_lines_name, machine_lines_short)
 
@@ -236,7 +244,7 @@ def barcodepage2(request):
                     MAX(CASE WHEN ir.OptionName = 'Tensile' THEN CASE WHEN ir.InspectionStatus = 'NG' THEN 1 ELSE 0 END END) AS Tensile_status,
                     MAX(CASE WHEN ir.OptionName = 'Elongation' THEN CASE WHEN ir.InspectionStatus = 'NG' THEN CONCAT(CAST(CAST(ir.InspectionValue AS INT) AS VARCHAR(MAX)), ' (', CAST(ir.DefectCode AS VARCHAR(MAX)), ')') ELSE CAST(CAST(ir.InspectionValue AS INT) AS VARCHAR(MAX)) END END) AS Elongation,
                     MAX(CASE WHEN ir.OptionName = 'Elongation' THEN CASE WHEN ir.InspectionStatus = 'NG' THEN 1 ELSE 0 END END) AS Elongation_status,
-                    au.Name
+                    au.Name, std.Size
                     FROM [PMGMES].[dbo].[PMG_MES_RunCard] rc
                     join [PMGMES].[dbo].[PMG_MES_WorkOrder] wo
                     on wo.id = rc.WorkOrderId
@@ -244,6 +252,8 @@ def barcodepage2(request):
                     on ir.RunCardId = rc.id
                     join [PMGMES].[dbo].[AbpUsers] au
                     on rc.CreatorUserId = au.Id
+                    join {size_table} std
+                    on std.ProductItem = wo.ProductItem
                     WHERE rc.MachineName = '{mach}'
                         AND rc.WorkCenterTypeName = '{plant}'
                         AND rc.LineName = '{line}'
@@ -251,7 +261,7 @@ def barcodepage2(request):
                             OR (rc.Period <= 5 AND rc.InspectionDate = '{data_date2}'))
                     AND rc.Period = '{time}'
                     AND wo.StartDate is not NULL
-                    Group by rc.id, rc.WorkOrderId, wo.PartNo, wo.CustomerCode, wo.CustomerName, wo.ProductItem, wo.AQL, au.Name"""
+                    Group by rc.id, rc.WorkOrderId, wo.PartNo, wo.CustomerCode, wo.CustomerName, wo.ProductItem, wo.AQL, au.Name, std.Size"""
         text_to_convert_dict = db_mes.select_sql_dict(sql02)
         wo_len = len(text_to_convert_dict)
         if wo_len > 0:
@@ -292,7 +302,7 @@ def barcodepage2(request):
             elongation_status = text_to_convert_dict[wo]['Elongation_status'] if text_to_convert_dict[wo]['Elongation_status'] is not None else ''
 
             nguoikiemtra = text_to_convert_dict[wo]['Name']
-            kichco = ''
+            kichco = text_to_convert_dict[wo]['Size']
             text_to_convert = text_to_convert_dict[wo]['id']
         else:
             wo_zip = zip('0', '0')
@@ -462,5 +472,5 @@ def extract_kichco(input_string):
             else:
                 return result
     except Exception as e:
-        print(f'Error: {e}')
+        print(e)
         return ' '
