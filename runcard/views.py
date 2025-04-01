@@ -75,42 +75,41 @@ def barcodepage(request):
         nbr_lines = ['A1', 'B1', 'A2', 'B2']
         pvc_lines = ['', 'A1', 'B1', '']
 
-
         sql02 = f"""SELECT rc.id, rc.WorkOrderId, wo.PartNo, wo.CustomerCode, wo.CustomerName, wo.ProductItem, wo.AQL,
-                    MAX(CASE WHEN ir.OptionName = 'Roll' THEN CASE WHEN ir.InspectionStatus = 'NG' THEN CONCAT(CAST(ir.InspectionValue AS VARCHAR(MAX)), ' (', CAST(ir.DefectCode AS VARCHAR(MAX)), ')') ELSE CAST(ir.InspectionValue AS VARCHAR(MAX)) END END) AS Roll,
-                    MAX(CASE WHEN ir.OptionName = 'Roll' THEN CASE WHEN ir.InspectionStatus = 'NG' THEN 1 ELSE 0 END END) AS Roll_status,
-                    MAX(CASE WHEN ir.OptionName = 'Cuff' THEN CASE WHEN ir.InspectionStatus = 'NG' THEN CONCAT(CAST(ir.InspectionValue AS VARCHAR(MAX)), ' (', CAST(ir.DefectCode AS VARCHAR(MAX)), ')') ELSE CAST(ir.InspectionValue AS VARCHAR(MAX)) END END) AS Cuff,
-                    MAX(CASE WHEN ir.OptionName = 'Cuff' THEN CASE WHEN ir.InspectionStatus = 'NG' THEN 1 ELSE 0 END END) AS Cuff_status,
-                    MAX(CASE WHEN ir.OptionName = 'Palm' THEN CASE WHEN ir.InspectionStatus = 'NG' THEN CONCAT(CAST(ir.InspectionValue AS VARCHAR(MAX)), ' (', CAST(ir.DefectCode AS VARCHAR(MAX)), ')') ELSE CAST(ir.InspectionValue AS VARCHAR(MAX)) END END) AS Palm,
-                    MAX(CASE WHEN ir.OptionName = 'Palm' THEN CASE WHEN ir.InspectionStatus = 'NG' THEN 1 ELSE 0 END END) AS Palm_status,
-                    MAX(CASE WHEN ir.OptionName = 'Finger' THEN CASE WHEN ir.InspectionStatus = 'NG' THEN CONCAT(CAST(ir.InspectionValue AS VARCHAR(MAX)), ' (', CAST(ir.DefectCode AS VARCHAR(MAX)), ')') ELSE CAST(ir.InspectionValue AS VARCHAR(MAX)) END END) AS Finger,
-                    MAX(CASE WHEN ir.OptionName = 'Finger' THEN CASE WHEN ir.InspectionStatus = 'NG' THEN 1 ELSE 0 END END) AS Finger_status,
-                    MAX(CASE WHEN ir.OptionName = 'FingerTip' THEN CASE WHEN ir.InspectionStatus = 'NG' THEN CONCAT(CAST(ir.InspectionValue AS VARCHAR(MAX)), ' (', CAST(ir.DefectCode AS VARCHAR(MAX)), ')') ELSE CAST(ir.InspectionValue AS VARCHAR(MAX)) END END) AS FingerTip,
-                    MAX(CASE WHEN ir.OptionName = 'FingerTip' THEN CASE WHEN ir.InspectionStatus = 'NG' THEN 1 ELSE 0 END END) AS FingerTip_status,
-                    MAX(CASE WHEN ir.OptionName = 'Weight' THEN CASE WHEN ir.InspectionStatus = 'NG' THEN CONCAT(CAST(FORMAT(CAST(ir.InspectionValue AS FLOAT), '0.00') AS VARCHAR(MAX)), ' (', CAST(ir.DefectCode AS VARCHAR(MAX)), ')') ELSE CAST(ir.InspectionValue AS VARCHAR(MAX)) END END) AS Weight,
-                    MAX(CASE WHEN ir.OptionName = 'Weight' THEN CASE WHEN ir.InspectionStatus = 'NG' THEN 1 ELSE 0 END END) AS Weight_status,
-                    MAX(CASE WHEN ir.OptionName = 'Tensile' THEN CASE WHEN ir.InspectionStatus = 'NG' THEN CONCAT(CAST(FORMAT(CAST(ROUND(ir.InspectionValue, 1) AS FLOAT) , '0.0') AS VARCHAR(MAX)), ' (', CAST(ir.DefectCode AS VARCHAR(MAX)), ')') ELSE CAST(FORMAT(CAST(ROUND(ir.InspectionValue, 1) AS FLOAT) , '0.0') AS VARCHAR(MAX)) END END) AS Tensile,
-                    MAX(CASE WHEN ir.OptionName = 'Tensile' THEN CASE WHEN ir.InspectionStatus = 'NG' THEN 1 ELSE 0 END END) AS Tensile_status,
-                    MAX(CASE WHEN ir.OptionName = 'Elongation' THEN CASE WHEN ir.InspectionStatus = 'NG' THEN CONCAT(CAST(CAST(ir.InspectionValue AS INT) AS VARCHAR(MAX)), ' (', CAST(ir.DefectCode AS VARCHAR(MAX)), ')') ELSE CAST(CAST(ir.InspectionValue AS INT) AS VARCHAR(MAX)) END END) AS Elongation,
-                    MAX(CASE WHEN ir.OptionName = 'Elongation' THEN CASE WHEN ir.InspectionStatus = 'NG' THEN 1 ELSE 0 END END) AS Elongation_status,
-                    au.Name, std.Size
-                    FROM [PMGMES].[dbo].[PMG_MES_RunCard] rc
-                    join [PMGMES].[dbo].[PMG_MES_WorkOrder] wo
-                    on wo.id = rc.WorkOrderId
-                    left join [PMGMES].[dbo].[PMG_MES_IPQCInspectingRecord] ir
-                    on ir.RunCardId = rc.id
-                    join [PMGMES].[dbo].[AbpUsers] au
-                    on rc.CreatorUserId = au.Id
-                    join {size_table} std
-                    on std.PartNo = wo.PartNo                    
-                    WHERE rc.MachineName = '{mach}'
-                        AND rc.WorkCenterTypeName = '{plant}'
-                        AND rc.LineName = '{line}'
-                        AND ((rc.Period > 5 AND rc.InspectionDate = '{data_date1}')
-                            OR (rc.Period <= 5 AND rc.InspectionDate = '{data_date2}'))
-                    AND rc.Period = '{time}'
-                    AND wo.StartDate is not NULL
-                    Group by rc.id, rc.WorkOrderId, wo.PartNo, wo.CustomerCode, wo.CustomerName, wo.ProductItem, wo.AQL, au.Name, std.Size"""
+                            MAX(CASE WHEN ir.OptionName = 'Roll' THEN CASE WHEN ir.InspectionStatus = 'NG' THEN CONCAT(CAST(ir.InspectionValue AS VARCHAR(MAX)), ' (', CAST(ir.DefectCode AS VARCHAR(MAX)), ')') ELSE CAST(ir.InspectionValue AS VARCHAR(MAX)) END END) AS Roll,
+                            MAX(CASE WHEN ir.OptionName = 'Roll' THEN CASE WHEN ir.InspectionStatus = 'NG' THEN 1 ELSE 0 END END) AS Roll_status,
+                            MAX(CASE WHEN ir.OptionName = 'Cuff' THEN CASE WHEN ir.InspectionStatus = 'NG' THEN CONCAT(CAST(ir.InspectionValue AS VARCHAR(MAX)), ' (', CAST(ir.DefectCode AS VARCHAR(MAX)), ')') ELSE CAST(ir.InspectionValue AS VARCHAR(MAX)) END END) AS Cuff,
+                            MAX(CASE WHEN ir.OptionName = 'Cuff' THEN CASE WHEN ir.InspectionStatus = 'NG' THEN 1 ELSE 0 END END) AS Cuff_status,
+                            MAX(CASE WHEN ir.OptionName = 'Palm' THEN CASE WHEN ir.InspectionStatus = 'NG' THEN CONCAT(CAST(ir.InspectionValue AS VARCHAR(MAX)), ' (', CAST(ir.DefectCode AS VARCHAR(MAX)), ')') ELSE CAST(ir.InspectionValue AS VARCHAR(MAX)) END END) AS Palm,
+                            MAX(CASE WHEN ir.OptionName = 'Palm' THEN CASE WHEN ir.InspectionStatus = 'NG' THEN 1 ELSE 0 END END) AS Palm_status,
+                            MAX(CASE WHEN ir.OptionName = 'Finger' THEN CASE WHEN ir.InspectionStatus = 'NG' THEN CONCAT(CAST(ir.InspectionValue AS VARCHAR(MAX)), ' (', CAST(ir.DefectCode AS VARCHAR(MAX)), ')') ELSE CAST(ir.InspectionValue AS VARCHAR(MAX)) END END) AS Finger,
+                            MAX(CASE WHEN ir.OptionName = 'Finger' THEN CASE WHEN ir.InspectionStatus = 'NG' THEN 1 ELSE 0 END END) AS Finger_status,
+                            MAX(CASE WHEN ir.OptionName = 'FingerTip' THEN CASE WHEN ir.InspectionStatus = 'NG' THEN CONCAT(CAST(ir.InspectionValue AS VARCHAR(MAX)), ' (', CAST(ir.DefectCode AS VARCHAR(MAX)), ')') ELSE CAST(ir.InspectionValue AS VARCHAR(MAX)) END END) AS FingerTip,
+                            MAX(CASE WHEN ir.OptionName = 'FingerTip' THEN CASE WHEN ir.InspectionStatus = 'NG' THEN 1 ELSE 0 END END) AS FingerTip_status,
+                            MAX(CASE WHEN ir.OptionName = 'Weight' THEN CASE WHEN ir.InspectionStatus = 'NG' THEN CONCAT(CAST(FORMAT(CAST(ir.InspectionValue AS FLOAT), '0.00') AS VARCHAR(MAX)), ' (', CAST(ir.DefectCode AS VARCHAR(MAX)), ')') ELSE CAST(ir.InspectionValue AS VARCHAR(MAX)) END END) AS Weight,
+                            MAX(CASE WHEN ir.OptionName = 'Weight' THEN CASE WHEN ir.InspectionStatus = 'NG' THEN 1 ELSE 0 END END) AS Weight_status,
+                            MAX(CASE WHEN ir.OptionName = 'Tensile' THEN CASE WHEN ir.InspectionStatus = 'NG' THEN CONCAT(CAST(FORMAT(CAST(ROUND(ir.InspectionValue, 1) AS FLOAT) , '0.0') AS VARCHAR(MAX)), ' (', CAST(ir.DefectCode AS VARCHAR(MAX)), ')') ELSE CAST(FORMAT(CAST(ROUND(ir.InspectionValue, 1) AS FLOAT) , '0.0') AS VARCHAR(MAX)) END END) AS Tensile,
+                            MAX(CASE WHEN ir.OptionName = 'Tensile' THEN CASE WHEN ir.InspectionStatus = 'NG' THEN 1 ELSE 0 END END) AS Tensile_status,
+                            MAX(CASE WHEN ir.OptionName = 'Elongation' THEN CASE WHEN ir.InspectionStatus = 'NG' THEN CONCAT(CAST(CAST(ir.InspectionValue AS INT) AS VARCHAR(MAX)), ' (', CAST(ir.DefectCode AS VARCHAR(MAX)), ')') ELSE CAST(CAST(ir.InspectionValue AS INT) AS VARCHAR(MAX)) END END) AS Elongation,
+                            MAX(CASE WHEN ir.OptionName = 'Elongation' THEN CASE WHEN ir.InspectionStatus = 'NG' THEN 1 ELSE 0 END END) AS Elongation_status,
+                            au.Name, std.Size
+                            FROM [PMGMES].[dbo].[PMG_MES_RunCard] rc
+                            join [PMGMES].[dbo].[PMG_MES_WorkOrder] wo
+                            on wo.id = rc.WorkOrderId
+                            left join [PMGMES].[dbo].[PMG_MES_IPQCInspectingRecord] ir
+                            on ir.RunCardId = rc.id
+                            join [PMGMES].[dbo].[AbpUsers] au
+                            on rc.CreatorUserId = au.Id
+                            join {size_table} std
+                            on std.PartNo = wo.PartNo                    
+                            WHERE rc.MachineName = '{mach}'
+                                AND rc.WorkCenterTypeName = '{plant}'
+                                AND rc.LineName = '{line}'
+                                AND ((rc.Period > 5 AND rc.InspectionDate = '{data_date1}')
+                                    OR (rc.Period <= 5 AND rc.InspectionDate = '{data_date2}'))
+                            AND rc.Period = '{time}'
+                            AND wo.StartDate is not NULL
+                            Group by rc.id, rc.WorkOrderId, wo.PartNo, wo.CustomerCode, wo.CustomerName, wo.ProductItem, wo.AQL, au.Name, std.Size"""
         text_to_convert_dict = db_mes.select_sql_dict(sql02)
         wo_len = len(text_to_convert_dict)
         if wo_len > 0:
@@ -226,42 +225,41 @@ def barcodepage2(request):
         nbr_lines = ['A1', 'B1', 'A2', 'B2']
         pvc_lines = ['', 'A1', 'B1', '']
 
-
         sql02 = f"""SELECT rc.id, rc.WorkOrderId, wo.PartNo, wo.CustomerCode, wo.CustomerName, wo.ProductItem, wo.AQL,
-                    MAX(CASE WHEN ir.OptionName = 'Roll' THEN CASE WHEN ir.InspectionStatus = 'NG' THEN CONCAT(CAST(ir.InspectionValue AS VARCHAR(MAX)), ' (', CAST(ir.DefectCode AS VARCHAR(MAX)), ')') ELSE CAST(ir.InspectionValue AS VARCHAR(MAX)) END END) AS Roll,
-                    MAX(CASE WHEN ir.OptionName = 'Roll' THEN CASE WHEN ir.InspectionStatus = 'NG' THEN 1 ELSE 0 END END) AS Roll_status,
-                    MAX(CASE WHEN ir.OptionName = 'Cuff' THEN CASE WHEN ir.InspectionStatus = 'NG' THEN CONCAT(CAST(ir.InspectionValue AS VARCHAR(MAX)), ' (', CAST(ir.DefectCode AS VARCHAR(MAX)), ')') ELSE CAST(ir.InspectionValue AS VARCHAR(MAX)) END END) AS Cuff,
-                    MAX(CASE WHEN ir.OptionName = 'Cuff' THEN CASE WHEN ir.InspectionStatus = 'NG' THEN 1 ELSE 0 END END) AS Cuff_status,
-                    MAX(CASE WHEN ir.OptionName = 'Palm' THEN CASE WHEN ir.InspectionStatus = 'NG' THEN CONCAT(CAST(ir.InspectionValue AS VARCHAR(MAX)), ' (', CAST(ir.DefectCode AS VARCHAR(MAX)), ')') ELSE CAST(ir.InspectionValue AS VARCHAR(MAX)) END END) AS Palm,
-                    MAX(CASE WHEN ir.OptionName = 'Palm' THEN CASE WHEN ir.InspectionStatus = 'NG' THEN 1 ELSE 0 END END) AS Palm_status,
-                    MAX(CASE WHEN ir.OptionName = 'Finger' THEN CASE WHEN ir.InspectionStatus = 'NG' THEN CONCAT(CAST(ir.InspectionValue AS VARCHAR(MAX)), ' (', CAST(ir.DefectCode AS VARCHAR(MAX)), ')') ELSE CAST(ir.InspectionValue AS VARCHAR(MAX)) END END) AS Finger,
-                    MAX(CASE WHEN ir.OptionName = 'Finger' THEN CASE WHEN ir.InspectionStatus = 'NG' THEN 1 ELSE 0 END END) AS Finger_status,
-                    MAX(CASE WHEN ir.OptionName = 'FingerTip' THEN CASE WHEN ir.InspectionStatus = 'NG' THEN CONCAT(CAST(ir.InspectionValue AS VARCHAR(MAX)), ' (', CAST(ir.DefectCode AS VARCHAR(MAX)), ')') ELSE CAST(ir.InspectionValue AS VARCHAR(MAX)) END END) AS FingerTip,
-                    MAX(CASE WHEN ir.OptionName = 'FingerTip' THEN CASE WHEN ir.InspectionStatus = 'NG' THEN 1 ELSE 0 END END) AS FingerTip_status,
-                    MAX(CASE WHEN ir.OptionName = 'Weight' THEN CASE WHEN ir.InspectionStatus = 'NG' THEN CONCAT(CAST(FORMAT(CAST(ir.InspectionValue AS FLOAT), '0.00') AS VARCHAR(MAX)), ' (', CAST(ir.DefectCode AS VARCHAR(MAX)), ')') ELSE CAST(ir.InspectionValue AS VARCHAR(MAX)) END END) AS Weight,
-                    MAX(CASE WHEN ir.OptionName = 'Weight' THEN CASE WHEN ir.InspectionStatus = 'NG' THEN 1 ELSE 0 END END) AS Weight_status,
-                    MAX(CASE WHEN ir.OptionName = 'Tensile' THEN CASE WHEN ir.InspectionStatus = 'NG' THEN CONCAT(CAST(FORMAT(CAST(ROUND(ir.InspectionValue, 1) AS FLOAT) , '0.0') AS VARCHAR(MAX)), ' (', CAST(ir.DefectCode AS VARCHAR(MAX)), ')') ELSE CAST(FORMAT(CAST(ROUND(ir.InspectionValue, 1) AS FLOAT) , '0.0') AS VARCHAR(MAX)) END END) AS Tensile,
-                    MAX(CASE WHEN ir.OptionName = 'Tensile' THEN CASE WHEN ir.InspectionStatus = 'NG' THEN 1 ELSE 0 END END) AS Tensile_status,
-                    MAX(CASE WHEN ir.OptionName = 'Elongation' THEN CASE WHEN ir.InspectionStatus = 'NG' THEN CONCAT(CAST(CAST(ir.InspectionValue AS INT) AS VARCHAR(MAX)), ' (', CAST(ir.DefectCode AS VARCHAR(MAX)), ')') ELSE CAST(CAST(ir.InspectionValue AS INT) AS VARCHAR(MAX)) END END) AS Elongation,
-                    MAX(CASE WHEN ir.OptionName = 'Elongation' THEN CASE WHEN ir.InspectionStatus = 'NG' THEN 1 ELSE 0 END END) AS Elongation_status,
-                    au.Name, std.Size
-                    FROM [PMGMES].[dbo].[PMG_MES_RunCard] rc
-                    join [PMGMES].[dbo].[PMG_MES_WorkOrder] wo
-                    on wo.id = rc.WorkOrderId
-                    left join [PMGMES].[dbo].[PMG_MES_IPQCInspectingRecord] ir
-                    on ir.RunCardId = rc.id
-                    join [PMGMES].[dbo].[AbpUsers] au
-                    on rc.CreatorUserId = au.Id
-                    join {size_table} std
-                    on std.ProductItem = wo.ProductItem
-                    WHERE rc.MachineName = '{mach}'
-                        AND rc.WorkCenterTypeName = '{plant}'
-                        AND rc.LineName = '{line}'
-                        AND ((rc.Period > 5 AND rc.InspectionDate = '{data_date1}')
-                            OR (rc.Period <= 5 AND rc.InspectionDate = '{data_date2}'))
-                    AND rc.Period = '{time}'
-                    AND wo.StartDate is not NULL
-                    Group by rc.id, rc.WorkOrderId, wo.PartNo, wo.CustomerCode, wo.CustomerName, wo.ProductItem, wo.AQL, au.Name, std.Size"""
+                            MAX(CASE WHEN ir.OptionName = 'Roll' THEN CASE WHEN ir.InspectionStatus = 'NG' THEN CONCAT(CAST(ir.InspectionValue AS VARCHAR(MAX)), ' (', CAST(ir.DefectCode AS VARCHAR(MAX)), ')') ELSE CAST(ir.InspectionValue AS VARCHAR(MAX)) END END) AS Roll,
+                            MAX(CASE WHEN ir.OptionName = 'Roll' THEN CASE WHEN ir.InspectionStatus = 'NG' THEN 1 ELSE 0 END END) AS Roll_status,
+                            MAX(CASE WHEN ir.OptionName = 'Cuff' THEN CASE WHEN ir.InspectionStatus = 'NG' THEN CONCAT(CAST(ir.InspectionValue AS VARCHAR(MAX)), ' (', CAST(ir.DefectCode AS VARCHAR(MAX)), ')') ELSE CAST(ir.InspectionValue AS VARCHAR(MAX)) END END) AS Cuff,
+                            MAX(CASE WHEN ir.OptionName = 'Cuff' THEN CASE WHEN ir.InspectionStatus = 'NG' THEN 1 ELSE 0 END END) AS Cuff_status,
+                            MAX(CASE WHEN ir.OptionName = 'Palm' THEN CASE WHEN ir.InspectionStatus = 'NG' THEN CONCAT(CAST(ir.InspectionValue AS VARCHAR(MAX)), ' (', CAST(ir.DefectCode AS VARCHAR(MAX)), ')') ELSE CAST(ir.InspectionValue AS VARCHAR(MAX)) END END) AS Palm,
+                            MAX(CASE WHEN ir.OptionName = 'Palm' THEN CASE WHEN ir.InspectionStatus = 'NG' THEN 1 ELSE 0 END END) AS Palm_status,
+                            MAX(CASE WHEN ir.OptionName = 'Finger' THEN CASE WHEN ir.InspectionStatus = 'NG' THEN CONCAT(CAST(ir.InspectionValue AS VARCHAR(MAX)), ' (', CAST(ir.DefectCode AS VARCHAR(MAX)), ')') ELSE CAST(ir.InspectionValue AS VARCHAR(MAX)) END END) AS Finger,
+                            MAX(CASE WHEN ir.OptionName = 'Finger' THEN CASE WHEN ir.InspectionStatus = 'NG' THEN 1 ELSE 0 END END) AS Finger_status,
+                            MAX(CASE WHEN ir.OptionName = 'FingerTip' THEN CASE WHEN ir.InspectionStatus = 'NG' THEN CONCAT(CAST(ir.InspectionValue AS VARCHAR(MAX)), ' (', CAST(ir.DefectCode AS VARCHAR(MAX)), ')') ELSE CAST(ir.InspectionValue AS VARCHAR(MAX)) END END) AS FingerTip,
+                            MAX(CASE WHEN ir.OptionName = 'FingerTip' THEN CASE WHEN ir.InspectionStatus = 'NG' THEN 1 ELSE 0 END END) AS FingerTip_status,
+                            MAX(CASE WHEN ir.OptionName = 'Weight' THEN CASE WHEN ir.InspectionStatus = 'NG' THEN CONCAT(CAST(FORMAT(CAST(ir.InspectionValue AS FLOAT), '0.00') AS VARCHAR(MAX)), ' (', CAST(ir.DefectCode AS VARCHAR(MAX)), ')') ELSE CAST(ir.InspectionValue AS VARCHAR(MAX)) END END) AS Weight,
+                            MAX(CASE WHEN ir.OptionName = 'Weight' THEN CASE WHEN ir.InspectionStatus = 'NG' THEN 1 ELSE 0 END END) AS Weight_status,
+                            MAX(CASE WHEN ir.OptionName = 'Tensile' THEN CASE WHEN ir.InspectionStatus = 'NG' THEN CONCAT(CAST(FORMAT(CAST(ROUND(ir.InspectionValue, 1) AS FLOAT) , '0.0') AS VARCHAR(MAX)), ' (', CAST(ir.DefectCode AS VARCHAR(MAX)), ')') ELSE CAST(FORMAT(CAST(ROUND(ir.InspectionValue, 1) AS FLOAT) , '0.0') AS VARCHAR(MAX)) END END) AS Tensile,
+                            MAX(CASE WHEN ir.OptionName = 'Tensile' THEN CASE WHEN ir.InspectionStatus = 'NG' THEN 1 ELSE 0 END END) AS Tensile_status,
+                            MAX(CASE WHEN ir.OptionName = 'Elongation' THEN CASE WHEN ir.InspectionStatus = 'NG' THEN CONCAT(CAST(CAST(ir.InspectionValue AS INT) AS VARCHAR(MAX)), ' (', CAST(ir.DefectCode AS VARCHAR(MAX)), ')') ELSE CAST(CAST(ir.InspectionValue AS INT) AS VARCHAR(MAX)) END END) AS Elongation,
+                            MAX(CASE WHEN ir.OptionName = 'Elongation' THEN CASE WHEN ir.InspectionStatus = 'NG' THEN 1 ELSE 0 END END) AS Elongation_status,
+                            au.Name, std.Size
+                            FROM [PMGMES].[dbo].[PMG_MES_RunCard] rc
+                            join [PMGMES].[dbo].[PMG_MES_WorkOrder] wo
+                            on wo.id = rc.WorkOrderId
+                            left join [PMGMES].[dbo].[PMG_MES_IPQCInspectingRecord] ir
+                            on ir.RunCardId = rc.id
+                            join [PMGMES].[dbo].[AbpUsers] au
+                            on rc.CreatorUserId = au.Id
+                            join {size_table} std
+                            on std.PartNo = wo.PartNo                    
+                            WHERE rc.MachineName = '{mach}'
+                                AND rc.WorkCenterTypeName = '{plant}'
+                                AND rc.LineName = '{line}'
+                                AND ((rc.Period > 5 AND rc.InspectionDate = '{data_date1}')
+                                    OR (rc.Period <= 5 AND rc.InspectionDate = '{data_date2}'))
+                            AND rc.Period = '{time}'
+                            AND wo.StartDate is not NULL
+                            Group by rc.id, rc.WorkOrderId, wo.PartNo, wo.CustomerCode, wo.CustomerName, wo.ProductItem, wo.AQL, au.Name, std.Size"""
         text_to_convert_dict = db_mes.select_sql_dict(sql02)
         wo_len = len(text_to_convert_dict)
         if wo_len > 0:
@@ -422,55 +420,3 @@ def search_for_runcard(request):
         print(e)
         pass
     return render(request, 'runcard/search.html', locals())
-
-def extract_kichco(input_string):
-    try:
-        db = vnedc_database()
-        sql = f"""
-            SELECT distinct(size) as kichco
-            FROM [VNEDC].[dbo].[collection_daily_prod_info_head] 
-            WHERE product ='{input_string}'
-        """
-        size = db.select_sql_dict(sql)
-        if len(size) > 0:
-            return size[0]['kichco']
-            pass
-        else:
-            first_dash_index = input_string.find('-')
-            if first_dash_index == -1:
-                dash_substring = input_string
-            else:
-                second_dash_index = input_string.find('-', first_dash_index + 1)
-                if second_dash_index == -1:
-                    dash_substring = input_string[first_dash_index + 1:]
-                else:
-                    dash_substring = input_string[first_dash_index + 1:second_dash_index]
-                substring = dash_substring.split(" ")[0]
-            if substring.endswith('XXL') or substring.endswith('XXS'):
-                result = substring[-3:]
-            elif substring.endswith('XL') or substring.endswith('XS'):
-                result = substring[-2:]
-            else:
-                result = substring[-1]
-
-            if result not in ['XXS', 'XS', 'S', 'M', 'L', 'XL', 'XXL']:
-                if dash_substring.find('XXS') > -1:
-                    result = 'XXS'
-                elif dash_substring.find('XXL') > -1:
-                    result = 'XXL'
-                elif dash_substring.find('XS') > -1:
-                    result = 'XS'
-                elif dash_substring.find('XL') > -1:
-                    result = 'XL'
-                elif dash_substring.find('S') > -1:
-                    result = 'S'
-                elif dash_substring.find('M') > -1:
-                    result = 'M'
-                elif dash_substring.find('L') > -1:
-                    result = 'L'
-                return result
-            else:
-                return result
-    except Exception as e:
-        print(e)
-        return ' '
